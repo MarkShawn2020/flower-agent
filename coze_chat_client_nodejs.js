@@ -52,13 +52,19 @@ class CozeClient {
             return new Promise((resolve, reject) => {
                 let fullResponse = "";
                 let newConversationId = null;
+                let buffer = ""; // 用于缓存不完整的数据
 
                 response.data.on('data', (chunk) => {
-                    const lines = chunk.toString().split('\n');
+                    buffer += chunk.toString();
+                    const lines = buffer.split('\n');
+                    
+                    // 保留最后一行（可能不完整），处理其他完整的行
+                    buffer = lines.pop() || "";
+                    
                     for (const line of lines) {
                         if (line.startsWith('data:')) {
-                            const dataStr = line.substring(5); // 移除 'data:' 前缀
-                            if (dataStr.trim()) {
+                            const dataStr = line.substring(5).trim(); // 移除 'data:' 前缀并去除空白
+                            if (dataStr && dataStr !== '[DONE]') {
                                 try {
                                     const data = JSON.parse(dataStr);
                                     // 获取会话ID
@@ -73,7 +79,10 @@ class CozeClient {
                                         }
                                     }
                                 } catch (e) {
-                                    console.error(`JSON解析错误: ${e.message}`);
+                                    // 只在非空数据时记录错误
+                                    if (dataStr.length > 0) {
+                                        console.error(`JSON解析错误: ${e.message}, 数据: ${dataStr.substring(0, 100)}`);
+                                    }
                                 }
                             }
                         }
