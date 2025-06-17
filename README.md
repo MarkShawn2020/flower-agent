@@ -25,6 +25,8 @@ zhaolaoshi/
 ├── package.json              # 项目配置文件
 ├── coze_chat_client_nodejs.js # Coze客户端核心类
 ├── coze_chat_client_demo.js   # 演示程序主入口
+├── .env                      # 环境变量配置文件 (请勿提交)
+├── .env.example              # 环境变量模板文件
 ├── pnpm-lock.yaml            # 依赖锁定文件
 └── README.md                 # 项目说明文档
 ```
@@ -41,13 +43,23 @@ pnpm install
 
 ## 配置说明
 
-在使用前，需要在 `coze_chat_client_demo.js` 中配置以下参数：
+### 环境变量配置
 
-```javascript
-const API_KEY = "your_coze_api_key";    // 替换为您的Coze API密钥
-const BOT_ID = "your_bot_id";           // 替换为您的智能体ID
-const USER_ID = "your_user_id";         // 替换为用户ID
+1. 复制环境变量模板文件：
+```bash
+cp .env.example .env
 ```
+
+2. 编辑 `.env` 文件，填入您的配置信息：
+```env
+COZE_API_KEY=your_coze_api_key_here
+COZE_BOT_ID=your_bot_id_here
+COZE_USER_ID=your_user_id_here
+```
+
+**注意**：
+- `.env` 文件包含敏感信息，请勿提交到版本控制系统
+- 确保获取有效的Coze API密钥和智能体ID
 
 ## 使用方法
 
@@ -130,9 +142,18 @@ async streamChat(userId, message, conversationId = null)
 
 ## 注意事项
 
-1. 确保API密钥的安全性，不要将其提交到版本控制系统
-2. 定期检查API调用限制和配额
-3. 建议将敏感配置信息存储在环境变量中
+1. **安全性**：
+   - 请勿将 `.env` 文件提交到版本控制系统
+   - 确保API密钥的安全性，避免泄露
+   - 项目已配置环境变量管理，所有敏感信息存储在 `.env` 文件中
+
+2. **API使用**：
+   - 定期检查API调用限制和配额
+   - 注意API调用频率限制
+
+3. **开发建议**：
+   - 使用 `.env.example` 作为配置模板
+   - 在生产环境中使用环境变量而非硬编码配置
 
 ## 许可证
 
